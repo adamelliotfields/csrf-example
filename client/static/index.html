@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- github.com/kognise/water.css -->
+    <link rel="stylesheet" href="/vendor/light.standalone.min.css" />
+    <title>Client</title>
+  </head>
+  <body>
+    <div>
+      <h1>Client</h1>
+      <h2>Instructions</h2>
+      <p>Clicking the <em>login</em> button sets the <code>access_token</code> cookie and <code>XSRF-TOKEN</code> cookie.</p>
+      <p>Clicking the <em>account</em> button sends a <code>POST</code> request to do something with your account.</p>
+      <p>Clicking the <em>logout</em> button clears the cookies.</p>
+      <button type="button" id="login"><strong>POST /login</strong></button>
+      <button type="button" id="account"><strong>POST /account</strong></button>
+      <button type="button" id="logout"><strong>POST /logout</strong></button>
+    </div>
+    <div id="json" style="display: none;">
+      <pre></pre>
+    </div>
+    <script>
+      const logInButton = document.getElementById('login');
+      const logOutButton = document.getElementById('logout');
+      const accountButton = document.getElementById('account');
+      const jsonDiv = document.getElementById('json');
+
+      const csrfTokenCookie = document
+        .cookie
+        .split('; ')
+        .find(cookie => cookie.toLowerCase().startsWith('xsrf-token'));
+
+      const csrfToken = typeof csrfTokenCookie !== 'undefined'
+        ? csrfTokenCookie.split('=')[1]
+        : '';
+
+      const formatResponse = (response, json) =>
+        `HTTP/1.1 ${response.status} ${response.statusText}\n\n${Array.from(response.headers).map(i => i.join(': ')).join('\n')}\n\n${JSON.stringify(json, null, 2)}`;
+
+      logInButton.addEventListener('click', async () => {
+        jsonDiv.style = "display: none;";
+
+        // Note that you must set credentials to include to receive cross-origin cookies.
+        const response = await fetch(
+          'http://localhost:3001/login',
+          { method: 'POST', credentials: 'include' },
+        );
+        const json = await response.json();
+
+        jsonDiv.firstElementChild.innerText = formatResponse(response, json);
+        jsonDiv.style = "display: block;";
+      });
+
+      accountButton.addEventListener('click', async () => {
+        jsonDiv.style = "display: none;";
+
+        const response = await fetch(
+          'http://localhost:3001/account',
+          { method: 'POST', credentials: 'include', headers: { 'X-XSRF-Token': csrfToken } },
+        );
+        const json = await response.json();
+
+        jsonDiv.firstElementChild.innerText = formatResponse(response, json);
+        jsonDiv.style = "display: block;";
+      });
+
+      logOutButton.addEventListener('click', async () => {
+        jsonDiv.style = "display: none;";
+
+        const response = await fetch(
+          'http://localhost:3001/logout',
+          { method: 'POST', credentials: 'include' },
+        );
+        const json = await response.json();
+
+        jsonDiv.firstElementChild.innerText = formatResponse(response, json);
+        jsonDiv.style = "display: block;";
+      });
+    </script>
+  </body>
+</html>

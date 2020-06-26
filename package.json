@@ -1,0 +1,26 @@
+{
+  "private": true,
+  "name": "csrf-example",
+  "version": "0.0.0",
+  "scripts": {
+    "start": "concurrently -p command npm:start:*",
+    "start:client": "nodemon --ext js --ignore node_modules client",
+    "start:server": "nodemon --ext js --ignore node_modules server",
+    "start:attacker": "nodemon --ext js --ignore node_modules attacker"
+  },
+  "dependencies": {
+    "consola": "2.13.0",
+    "cookie-parser": "1.4.5",
+    "cors": "2.8.5",
+    "csrf": "3.1.0",
+    "express": "4.17.1",
+    "helmet": "3.23.2",
+    "http-errors": "1.7.3",
+    "morgan": "1.10.0",
+    "ms": "2.1.2"
+  },
+  "devDependencies": {
+    "concurrently": "5.2.0",
+    "nodemon": "2.0.4"
+  }
+}

